@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Battery, Moon, Brain, AlertTriangle, Check } from "lucide-react";
 import { format } from "date-fns";
+import { HealthChatBot } from "@/components/health/HealthChatBot";
 
 const commonSymptoms = [
   "Headache",
@@ -356,6 +357,9 @@ export default function Health() {
             </p>
           )}
         </motion.div>
+
+        {/* AI Health Chatbot */}
+        <HealthChatBot />
       </div>
     </DashboardLayout>
   );
