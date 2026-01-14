@@ -50,6 +50,45 @@ export type Database = {
         }
         Relationships: []
       }
+      foods: {
+        Row: {
+          calories_per_100g: number
+          carbs_per_100g: number
+          category: string
+          created_at: string
+          created_by: string | null
+          fats_per_100g: number
+          fiber_per_100g: number
+          id: string
+          name: string
+          protein_per_100g: number
+        }
+        Insert: {
+          calories_per_100g?: number
+          carbs_per_100g?: number
+          category: string
+          created_at?: string
+          created_by?: string | null
+          fats_per_100g?: number
+          fiber_per_100g?: number
+          id?: string
+          name: string
+          protein_per_100g?: number
+        }
+        Update: {
+          calories_per_100g?: number
+          carbs_per_100g?: number
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          fats_per_100g?: number
+          fiber_per_100g?: number
+          id?: string
+          name?: string
+          protein_per_100g?: number
+        }
+        Relationships: []
+      }
       health_checkins: {
         Row: {
           checkin_date: string

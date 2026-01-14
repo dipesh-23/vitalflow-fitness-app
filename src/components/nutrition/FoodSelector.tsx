@@ -1,20 +1,25 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Plus, Sparkles, ChevronRight, Scale, AlertCircle } from "lucide-react";
+import { Search, Plus, Sparkles, ChevronRight, Scale, AlertCircle, Database } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import {
-  FoodItem,
-  foodDatabase,
-  foodCategories,
-  searchFoods,
-  calculateNutrition,
-} from "@/lib/food-database";
+
+interface FoodItem {
+  id: string;
+  name: string;
+  category: string;
+  calories_per_100g: number;
+  protein_per_100g: number;
+  carbs_per_100g: number;
+  fats_per_100g: number;
+  fiber_per_100g: number;
+}
 
 interface FoodSelectorProps {
   onSelect: (food: {
@@ -28,6 +33,8 @@ interface FoodSelectorProps {
   onClose: () => void;
 }
 
+const CATEGORIES = ["All", "proteins", "grains", "vegetables", "fruits", "dairy", "legumes", "snacks", "beverages", "custom"];
+
 export function FoodSelector({ onSelect, onClose }: FoodSelectorProps) {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("database");
@@ -35,11 +42,14 @@ export function FoodSelector({ onSelect, onClose }: FoodSelectorProps) {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null);
   const [weight, setWeight] = useState("");
+  const [foods, setFoods] = useState<FoodItem[]>([]);
+  const [loading, setLoading] = useState(true);
   
   // Custom food state
   const [customFood, setCustomFood] = useState("");
   const [customWeight, setCustomWeight] = useState("100");
   const [analyzing, setAnalyzing] = useState(false);
+  const [saveToDatabase, setSaveToDatabase] = useState(true);
   const [aiResult, setAiResult] = useState<{
     calories: number;
     protein_g: number;
@@ -50,11 +60,53 @@ export function FoodSelector({ onSelect, onClose }: FoodSelectorProps) {
     notes?: string;
   } | null>(null);
 
-  const filteredFoods = searchFoods(searchQuery, selectedCategory);
+  // Fetch foods from database
+  useEffect(() => {
+    fetchFoods();
+  }, []);
+
+  const fetchFoods = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("foods")
+        .select("*")
+        .order("name");
+
+      if (error) throw error;
+      setFoods(data || []);
+    } catch (error) {
+      console.error("Error fetching foods:", error);
+      toast({
+        title: "Error loading foods",
+        description: "Please try again",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredFoods = foods.filter((food) => {
+    const matchesSearch = food.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === "All" || food.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  const calculateNutrition = (food: FoodItem, weightGrams: number) => {
+    const multiplier = weightGrams / 100;
+    return {
+      calories: Math.round(food.calories_per_100g * multiplier),
+      protein_g: Math.round(food.protein_per_100g * multiplier * 10) / 10,
+      carbs_g: Math.round(food.carbs_per_100g * multiplier * 10) / 10,
+      fats_g: Math.round(food.fats_per_100g * multiplier * 10) / 10,
+      fiber_g: Math.round(food.fiber_per_100g * multiplier * 10) / 10,
+    };
+  };
 
   const handleFoodSelect = (food: FoodItem) => {
     setSelectedFood(food);
-    setWeight(String(food.serving_size || 100));
+    setWeight("100");
   };
 
   const handleAddFromDatabase = () => {
@@ -108,8 +160,48 @@ export function FoodSelector({ onSelect, onClose }: FoodSelectorProps) {
     }
   };
 
-  const handleAddCustomFood = () => {
+  const handleAddCustomFood = async () => {
     if (!aiResult) return;
+    
+    // Save to database if checkbox is checked
+    if (saveToDatabase) {
+      try {
+        const { data: user } = await supabase.auth.getUser();
+        const weightNum = parseInt(customWeight) || 100;
+        
+        // Calculate per 100g values
+        const per100g = {
+          calories_per_100g: Math.round((aiResult.calories / weightNum) * 100),
+          protein_per_100g: Math.round((aiResult.protein_g / weightNum) * 100 * 10) / 10,
+          carbs_per_100g: Math.round((aiResult.carbs_g / weightNum) * 100 * 10) / 10,
+          fats_per_100g: Math.round((aiResult.fats_g / weightNum) * 100 * 10) / 10,
+          fiber_per_100g: Math.round((aiResult.fiber_g / weightNum) * 100 * 10) / 10,
+        };
+
+        const { error } = await supabase.from("foods").insert({
+          name: customFood,
+          category: "custom",
+          ...per100g,
+          created_by: user?.user?.id,
+        });
+
+        if (error) {
+          // If duplicate, just continue without error
+          if (!error.message.includes("duplicate")) {
+            console.error("Error saving food:", error);
+          }
+        } else {
+          toast({
+            title: "Food saved! 🎉",
+            description: `${customFood} is now available in the food database for everyone`,
+          });
+          // Refresh foods list
+          fetchFoods();
+        }
+      } catch (error) {
+        console.error("Error saving food to database:", error);
+      }
+    }
     
     onSelect({
       food_name: `${customFood} (${customWeight}g)`,
@@ -121,11 +213,27 @@ export function FoodSelector({ onSelect, onClose }: FoodSelectorProps) {
     });
   };
 
+  const categoryLabels: Record<string, string> = {
+    All: "All",
+    proteins: "🥩 Proteins",
+    grains: "🌾 Grains",
+    vegetables: "🥬 Vegetables",
+    fruits: "🍎 Fruits",
+    dairy: "🧀 Dairy",
+    legumes: "🥜 Legumes",
+    snacks: "🍿 Snacks",
+    beverages: "🥤 Beverages",
+    custom: "✨ Custom",
+  };
+
   return (
     <div className="space-y-4">
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="database">Food Database</TabsTrigger>
+          <TabsTrigger value="database" className="gap-2">
+            <Database className="w-4 h-4" />
+            Food Database
+          </TabsTrigger>
           <TabsTrigger value="custom" className="gap-2">
             <Sparkles className="w-4 h-4" />
             AI Analysis
@@ -146,7 +254,7 @@ export function FoodSelector({ onSelect, onClose }: FoodSelectorProps) {
 
           {/* Categories */}
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-            {foodCategories.map((cat) => (
+            {CATEGORIES.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
@@ -156,7 +264,7 @@ export function FoodSelector({ onSelect, onClose }: FoodSelectorProps) {
                     : "bg-muted hover:bg-muted/80"
                 }`}
               >
-                {cat}
+                {categoryLabels[cat] || cat}
               </button>
             ))}
           </div>
@@ -175,7 +283,9 @@ export function FoodSelector({ onSelect, onClose }: FoodSelectorProps) {
                   <div className="flex items-center justify-between mb-3">
                     <div>
                       <p className="font-medium">{selectedFood.name}</p>
-                      <Badge variant="secondary" className="mt-1">{selectedFood.category}</Badge>
+                      <Badge variant="secondary" className="mt-1">
+                        {categoryLabels[selectedFood.category] || selectedFood.category}
+                      </Badge>
                     </div>
                     <button
                       onClick={() => setSelectedFood(null)}
@@ -199,9 +309,6 @@ export function FoodSelector({ onSelect, onClose }: FoodSelectorProps) {
                         className="mt-2"
                         placeholder="100"
                       />
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Typical serving: {selectedFood.serving_size || 100}g
-                      </p>
                     </div>
 
                     {weight && (
@@ -256,7 +363,12 @@ export function FoodSelector({ onSelect, onClose }: FoodSelectorProps) {
                 exit={{ opacity: 0 }}
                 className="max-h-[300px] overflow-y-auto space-y-1"
               >
-                {filteredFoods.length === 0 ? (
+                {loading ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+                    <p>Loading foods...</p>
+                  </div>
+                ) : filteredFoods.length === 0 ? (
                   <div className="text-center py-8 text-muted-foreground">
                     <p>No foods found</p>
                     <p className="text-sm mt-1">Try the AI Analysis tab for custom foods</p>
@@ -271,7 +383,7 @@ export function FoodSelector({ onSelect, onClose }: FoodSelectorProps) {
                       <div>
                         <p className="font-medium">{food.name}</p>
                         <p className="text-xs text-muted-foreground">
-                          {food.calories} cal per 100g • P: {food.protein_g}g
+                          {food.calories_per_100g} cal per 100g • P: {food.protein_per_100g}g
                         </p>
                       </div>
                       <ChevronRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -387,6 +499,17 @@ export function FoodSelector({ onSelect, onClose }: FoodSelectorProps) {
                       {aiResult.notes}
                     </p>
                   )}
+                </div>
+
+                <div className="flex items-center gap-2 px-1">
+                  <Checkbox
+                    id="saveToDatabase"
+                    checked={saveToDatabase}
+                    onCheckedChange={(checked) => setSaveToDatabase(checked as boolean)}
+                  />
+                  <Label htmlFor="saveToDatabase" className="text-sm cursor-pointer">
+                    Save to food database (available for all users)
+                  </Label>
                 </div>
 
                 <Button
