@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -16,13 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { FoodSelector } from "@/components/nutrition/FoodSelector";
 
 const mealTypes = [
   { value: "breakfast", label: "Breakfast", emoji: "🌅" },
@@ -38,15 +30,7 @@ export default function Nutrition() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-
-  const [formData, setFormData] = useState({
-    meal_type: "breakfast",
-    food_name: "",
-    calories: "",
-    protein_g: "",
-    carbs_g: "",
-    fats_g: "",
-  });
+  const [selectedMealType, setSelectedMealType] = useState("breakfast");
 
   const today = format(new Date(), "yyyy-MM-dd");
 
@@ -74,20 +58,27 @@ export default function Nutrition() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleFoodSelect = async (food: {
+    food_name: string;
+    calories: number;
+    protein_g: number;
+    carbs_g: number;
+    fats_g: number;
+    fiber_g?: number;
+  }) => {
     if (!user) return;
 
     setSubmitting(true);
     try {
       const { error } = await supabase.from("meals").insert({
         user_id: user.id,
-        meal_type: formData.meal_type,
-        food_name: formData.food_name,
-        calories: parseInt(formData.calories) || 0,
-        protein_g: parseFloat(formData.protein_g) || 0,
-        carbs_g: parseFloat(formData.carbs_g) || 0,
-        fats_g: parseFloat(formData.fats_g) || 0,
+        meal_type: selectedMealType,
+        food_name: food.food_name,
+        calories: food.calories,
+        protein_g: food.protein_g,
+        carbs_g: food.carbs_g,
+        fats_g: food.fats_g,
+        fiber_g: food.fiber_g || 0,
         meal_date: today,
       });
 
@@ -95,17 +86,9 @@ export default function Nutrition() {
 
       toast({
         title: "Meal logged! 🍽️",
-        description: `${formData.food_name} - ${formData.calories} calories`,
+        description: `${food.food_name} - ${food.calories} calories`,
       });
 
-      setFormData({
-        meal_type: "breakfast",
-        food_name: "",
-        calories: "",
-        protein_g: "",
-        carbs_g: "",
-        fats_g: "",
-      });
       setIsDialogOpen(false);
       loadData();
     } catch (error) {
@@ -171,103 +154,40 @@ export default function Nutrition() {
                 Log Meal
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>Log Meal</DialogTitle>
               </DialogHeader>
-              <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-                <div>
-                  <Label>Meal Type</Label>
-                  <div className="grid grid-cols-4 gap-2 mt-2">
-                    {mealTypes.map((type) => (
-                      <button
-                        key={type.value}
-                        type="button"
-                        onClick={() => setFormData({ ...formData, meal_type: type.value })}
-                        className={`p-3 rounded-xl border-2 transition-all flex flex-col items-center gap-1 ${
-                          formData.meal_type === type.value
-                            ? "border-primary bg-primary/10"
-                            : "border-border hover:border-primary/50"
-                        }`}
-                      >
-                        <span className="text-xl">{type.emoji}</span>
-                        <span className="text-xs">{type.label}</span>
-                      </button>
-                    ))}
-                  </div>
+              
+              {/* Meal Type Selection */}
+              <div className="mt-4">
+                <p className="text-sm font-medium text-muted-foreground mb-2">Select meal type</p>
+                <div className="grid grid-cols-4 gap-2">
+                  {mealTypes.map((type) => (
+                    <button
+                      key={type.value}
+                      type="button"
+                      onClick={() => setSelectedMealType(type.value)}
+                      className={`p-3 rounded-xl border-2 transition-all flex flex-col items-center gap-1 ${
+                        selectedMealType === type.value
+                          ? "border-primary bg-primary/10"
+                          : "border-border hover:border-primary/50"
+                      }`}
+                    >
+                      <span className="text-xl">{type.emoji}</span>
+                      <span className="text-xs">{type.label}</span>
+                    </button>
+                  ))}
                 </div>
+              </div>
 
-                <div>
-                  <Label htmlFor="food">Food Name</Label>
-                  <Input
-                    id="food"
-                    placeholder="e.g., Grilled chicken salad"
-                    value={formData.food_name}
-                    onChange={(e) => setFormData({ ...formData, food_name: e.target.value })}
-                    className="mt-2"
-                    required
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="calories">Calories (kcal)</Label>
-                    <Input
-                      id="calories"
-                      type="number"
-                      placeholder="350"
-                      value={formData.calories}
-                      onChange={(e) => setFormData({ ...formData, calories: e.target.value })}
-                      className="mt-2"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="protein">Protein (g)</Label>
-                    <Input
-                      id="protein"
-                      type="number"
-                      placeholder="25"
-                      value={formData.protein_g}
-                      onChange={(e) => setFormData({ ...formData, protein_g: e.target.value })}
-                      className="mt-2"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="carbs">Carbs (g)</Label>
-                    <Input
-                      id="carbs"
-                      type="number"
-                      placeholder="30"
-                      value={formData.carbs_g}
-                      onChange={(e) => setFormData({ ...formData, carbs_g: e.target.value })}
-                      className="mt-2"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="fats">Fats (g)</Label>
-                    <Input
-                      id="fats"
-                      type="number"
-                      placeholder="15"
-                      value={formData.fats_g}
-                      onChange={(e) => setFormData({ ...formData, fats_g: e.target.value })}
-                      className="mt-2"
-                    />
-                  </div>
-                </div>
-
-                <Button
-                  type="submit"
-                  variant="hero"
-                  className="w-full"
-                  disabled={!formData.food_name || submitting}
-                >
-                  {submitting ? "Logging..." : "Log Meal"}
-                </Button>
-              </form>
+              {/* Food Selector */}
+              <div className="mt-4">
+                <FoodSelector
+                  onSelect={handleFoodSelect}
+                  onClose={() => setIsDialogOpen(false)}
+                />
+              </div>
             </DialogContent>
           </Dialog>
         </div>
