@@ -7,6 +7,16 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 
+// Utility function to format Markdown text
+const formatMarkdown = (text: string): string => {
+  // Replace **bold** with <strong>bold</strong>
+  const boldFormatted = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+  // Replace newlines with <br /> to preserve paragraph spacing
+  const withLineBreaks = boldFormatted.replace(/\n/g, "<br />");
+  // Remove other Markdown characters like _, *, and `
+  return withLineBreaks.replace(/(__|\*|_|`)/g, "");
+};
+
 interface Message {
   role: "user" | "assistant";
   content: string;
@@ -20,7 +30,9 @@ export function HealthChatBot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Hi! I'm your AI health assistant. I have access to your health data, meals, and activities. Ask me for dietary advice, health summaries, or any wellness questions!",
+      content: formatMarkdown(
+        "Hi! I'm your **AI health assistant**. I have access to your health data, meals, and activities.\n\nAsk me for dietary advice, health summaries, or any wellness questions!"
+      ),
     },
   ]);
   const [input, setInput] = useState("");
@@ -47,9 +59,9 @@ export function HealthChatBot() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
       },
-      body: JSON.stringify({ 
-        messages: userMessages.map(m => ({ role: m.role, content: m.content })),
-        userId: user?.id 
+      body: JSON.stringify({
+        messages: userMessages.map((m) => ({ role: m.role, content: m.content })),
+        userId: user?.id,
       }),
     });
 
@@ -68,7 +80,7 @@ export function HealthChatBot() {
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
-      
+
       textBuffer += decoder.decode(value, { stream: true });
 
       let newlineIndex: number;
@@ -88,14 +100,16 @@ export function HealthChatBot() {
           const content = parsed.choices?.[0]?.delta?.content as string | undefined;
           if (content) {
             assistantContent += content;
-            setMessages(prev => {
+            setMessages((prev) => {
               const last = prev[prev.length - 1];
               if (last?.role === "assistant" && prev.length > 1) {
-                return prev.map((m, i) => 
-                  i === prev.length - 1 ? { ...m, content: assistantContent } : m
+                return prev.map((m, i) =>
+                  i === prev.length - 1
+                    ? { ...m, content: formatMarkdown(assistantContent) }
+                    : m
                 );
               }
-              return [...prev, { role: "assistant", content: assistantContent }];
+              return [...prev, { role: "assistant", content: formatMarkdown(assistantContent) }];
             });
           }
         } catch {
@@ -120,7 +134,7 @@ export function HealthChatBot() {
     } catch (error) {
       console.error("Chat error:", error);
       toast.error(error instanceof Error ? error.message : "Failed to get response");
-      setMessages(prev => [
+      setMessages((prev) => [
         ...prev,
         { role: "assistant", content: "Sorry, I encountered an error. Please try again." },
       ]);
@@ -224,9 +238,8 @@ export function HealthChatBot() {
                           ? "bg-primary text-primary-foreground"
                           : "bg-muted text-foreground"
                       }`}
-                    >
-                      <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                    </div>
+                      dangerouslySetInnerHTML={{ __html: message.content }}
+                    />
                   </motion.div>
                 ))}
                 {isLoading && messages[messages.length - 1]?.role === "user" && (
