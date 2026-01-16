@@ -15,8 +15,8 @@ export function MobileNav() {
   const navigate = useNavigate();
 
   return (
-    <nav className="mobile-nav md:hidden">
-      <div className="flex items-center justify-around py-2 px-4 safe-area-inset-bottom">
+    <nav className="mobile-nav lg:hidden">
+      <div className="flex items-center justify-around py-2 px-2 sm:px-4 safe-area-inset-bottom">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           
@@ -24,12 +24,12 @@ export function MobileNav() {
             <button
               key={item.path}
               onClick={() => navigate(item.path)}
-              className="relative flex flex-col items-center gap-1 p-2 min-w-[60px]"
+              className="relative flex flex-col items-center gap-0.5 sm:gap-1 p-1.5 sm:p-2 min-w-[50px] sm:min-w-[60px]"
             >
               {isActive && (
                 <motion.div
                   layoutId="nav-indicator"
-                  className="absolute -top-1 w-8 h-1 rounded-full bg-primary"
+                  className="absolute -top-1 w-6 sm:w-8 h-1 rounded-full bg-primary"
                   transition={{ type: "spring", stiffness: 500, damping: 30 }}
                 />
               )}
@@ -39,7 +39,7 @@ export function MobileNav() {
                 }`} 
               />
               <span 
-                className={`text-xs transition-colors ${
+                className={`text-[10px] sm:text-xs transition-colors ${
                   isActive ? "text-primary font-medium" : "text-muted-foreground"
                 }`}
               >

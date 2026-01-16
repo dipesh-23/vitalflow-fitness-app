@@ -140,12 +140,12 @@ export default function Profile() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold">Profile</h1>
-            <p className="text-muted-foreground">{user?.email}</p>
+            <h1 className="text-xl sm:text-2xl font-bold">Profile</h1>
+            <p className="text-sm sm:text-base text-muted-foreground truncate max-w-[200px] sm:max-w-none">{user?.email}</p>
           </div>
         </div>
 
@@ -154,11 +154,11 @@ export default function Profile() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="p-6 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border text-center"
+            className="p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border text-center"
           >
-            <p className="text-sm text-muted-foreground mb-1">Your BMI</p>
-            <p className="text-4xl font-bold mb-1">{bmi}</p>
-            <p className={`text-sm font-medium ${bmiCategory?.color}`}>
+            <p className="text-xs sm:text-sm text-muted-foreground mb-1">Your BMI</p>
+            <p className="text-3xl sm:text-4xl font-bold mb-1">{bmi}</p>
+            <p className={`text-xs sm:text-sm font-medium ${bmiCategory?.color}`}>
               {bmiCategory?.label}
             </p>
           </motion.div>
@@ -168,18 +168,18 @@ export default function Profile() {
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-6 rounded-2xl bg-card border"
+          className="p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-card border"
         >
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-              <User className="w-5 h-5 text-primary" />
+          <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-primary/10 flex items-center justify-center">
+              <User className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
             </div>
-            <h3 className="font-semibold">Basic Information</h3>
+            <h3 className="font-semibold text-sm sm:text-base">Basic Information</h3>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             <div>
-              <Label htmlFor="name">Full Name</Label>
+              <Label htmlFor="name" className="text-sm">Full Name</Label>
               <Input
                 id="name"
                 value={formData.full_name}
@@ -188,9 +188,9 @@ export default function Profile() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
               <div>
-                <Label htmlFor="age">Age</Label>
+                <Label htmlFor="age" className="text-sm">Age</Label>
                 <Input
                   id="age"
                   type="number"
@@ -200,7 +200,7 @@ export default function Profile() {
                 />
               </div>
               <div>
-                <Label>Gender</Label>
+                <Label className="text-sm">Gender</Label>
                 <Select
                   value={formData.gender}
                   onValueChange={(v) => setFormData({ ...formData, gender: v })}
@@ -224,18 +224,18 @@ export default function Profile() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="p-6 rounded-2xl bg-card border"
+          className="p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-card border"
         >
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
-              <Scale className="w-5 h-5 text-accent" />
+          <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-accent/10 flex items-center justify-center">
+              <Scale className="w-4 h-4 sm:w-5 sm:h-5 text-accent" />
             </div>
-            <h3 className="font-semibold">Body Metrics</h3>
+            <h3 className="font-semibold text-sm sm:text-base">Body Metrics</h3>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
             <div>
-              <Label htmlFor="height">Height (cm)</Label>
+              <Label htmlFor="height" className="text-sm">Height (cm)</Label>
               <Input
                 id="height"
                 type="number"
@@ -245,7 +245,7 @@ export default function Profile() {
               />
             </div>
             <div>
-              <Label htmlFor="weight">Weight (kg)</Label>
+              <Label htmlFor="weight" className="text-sm">Weight (kg)</Label>
               <Input
                 id="weight"
                 type="number"
@@ -262,18 +262,18 @@ export default function Profile() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="p-6 rounded-2xl bg-card border"
+          className="p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-card border"
         >
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-success/10 flex items-center justify-center">
-              <Target className="w-5 h-5 text-success" />
+          <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-success/10 flex items-center justify-center">
+              <Target className="w-4 h-4 sm:w-5 sm:h-5 text-success" />
             </div>
-            <h3 className="font-semibold">Goals & Preferences</h3>
+            <h3 className="font-semibold text-sm sm:text-base">Goals & Preferences</h3>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             <div>
-              <Label>Activity Level</Label>
+              <Label className="text-sm">Activity Level</Label>
               <Select
                 value={formData.activity_level}
                 onValueChange={(v) => setFormData({ ...formData, activity_level: v })}
@@ -292,7 +292,7 @@ export default function Profile() {
             </div>
 
             <div>
-              <Label>Fitness Goal</Label>
+              <Label className="text-sm">Fitness Goal</Label>
               <Select
                 value={formData.fitness_goal}
                 onValueChange={(v) => setFormData({ ...formData, fitness_goal: v })}
@@ -309,7 +309,7 @@ export default function Profile() {
             </div>
 
             <div>
-              <Label>Dietary Preference</Label>
+              <Label className="text-sm">Dietary Preference</Label>
               <Select
                 value={formData.dietary_preference}
                 onValueChange={(v) => setFormData({ ...formData, dietary_preference: v })}
@@ -332,17 +332,17 @@ export default function Profile() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="space-y-3"
+          className="space-y-2 sm:space-y-3"
         >
           <Button
             variant="hero"
             size="lg"
-            className="w-full"
+            className="w-full text-sm sm:text-base"
             onClick={handleSave}
             disabled={saving}
           >
             {saving ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
+              <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
             ) : (
               "Save Changes"
             )}
@@ -351,7 +351,7 @@ export default function Profile() {
           <Button
             variant="outline"
             size="lg"
-            className="w-full text-destructive hover:text-destructive hover:bg-destructive/10"
+            className="w-full text-destructive hover:text-destructive hover:bg-destructive/10 text-sm sm:text-base"
             onClick={handleSignOut}
           >
             <LogOut className="w-4 h-4 mr-2" />

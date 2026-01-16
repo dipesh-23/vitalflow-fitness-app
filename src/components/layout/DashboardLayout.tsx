@@ -31,7 +31,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <div className="min-h-screen bg-background">
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex fixed left-0 top-0 bottom-0 w-64 flex-col border-r bg-card p-4">
+      <aside className="hidden lg:flex fixed left-0 top-0 bottom-0 w-64 flex-col border-r bg-card p-4">
         <div className="flex items-center gap-2 mb-8">
           <div className="p-1.5 rounded-lg bg-primary">
             <Heart className="w-5 h-5 text-primary-foreground" />
@@ -84,8 +84,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       </aside>
 
       {/* Main content */}
-      <main className="md:pl-64 pb-20 md:pb-0">
-        <div className="container max-w-4xl mx-auto py-6 px-4">
+      <main className="lg:pl-64 pb-20 lg:pb-0">
+        <div className="container max-w-4xl mx-auto py-4 px-3 sm:py-6 sm:px-4">
           {children}
         </div>
       </main>

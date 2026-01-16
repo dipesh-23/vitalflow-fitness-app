@@ -160,14 +160,14 @@ export default function Health() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-bold">Daily Health Check-in</h1>
-          <p className="text-muted-foreground">{format(new Date(), "EEEE, MMMM d")}</p>
+          <h1 className="text-xl sm:text-2xl font-bold">Daily Health Check-in</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">{format(new Date(), "EEEE, MMMM d")}</p>
           {existingCheckin && (
-            <div className="inline-flex items-center gap-1.5 mt-2 px-3 py-1 rounded-full bg-success/10 text-success text-sm">
-              <Check className="w-4 h-4" />
+            <div className="inline-flex items-center gap-1.5 mt-2 px-2 sm:px-3 py-1 rounded-full bg-success/10 text-success text-xs sm:text-sm">
+              <Check className="w-3 h-3 sm:w-4 sm:h-4" />
               Checked in today
             </div>
           )}
@@ -177,31 +177,31 @@ export default function Health() {
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-6 rounded-2xl bg-card border"
+          className="p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-card border"
         >
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-energy/10 flex items-center justify-center">
-              <Battery className="w-5 h-5 text-energy" />
+          <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-energy/10 flex items-center justify-center">
+              <Battery className="w-4 h-4 sm:w-5 sm:h-5 text-energy" />
             </div>
             <div>
-              <h3 className="font-semibold">Energy Level</h3>
-              <p className="text-sm text-muted-foreground">How energized do you feel?</p>
+              <h3 className="font-semibold text-sm sm:text-base">Energy Level</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground">How energized do you feel?</p>
             </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-1.5 sm:gap-2">
             {levelOptions.map((option) => (
               <button
                 key={option.value}
                 onClick={() => setFormData({ ...formData, energy_level: option.value })}
-                className={`flex-1 p-3 rounded-xl border-2 transition-all text-center ${
+                className={`flex-1 p-2 sm:p-3 rounded-lg sm:rounded-xl border-2 transition-all text-center ${
                   formData.energy_level === option.value
                     ? "border-energy bg-energy/10"
                     : "border-border hover:border-energy/50"
                 }`}
               >
-                <div className={`w-4 h-4 rounded-full ${option.color} mx-auto mb-1`} />
-                <span className="text-xs">{option.label}</span>
+                <div className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full ${option.color} mx-auto mb-0.5 sm:mb-1`} />
+                <span className="text-[10px] sm:text-xs">{option.label}</span>
               </button>
             ))}
           </div>
@@ -212,31 +212,31 @@ export default function Health() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="p-6 rounded-2xl bg-card border"
+          className="p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-card border"
         >
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-sleep/10 flex items-center justify-center">
-              <Moon className="w-5 h-5 text-sleep" />
+          <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-sleep/10 flex items-center justify-center">
+              <Moon className="w-4 h-4 sm:w-5 sm:h-5 text-sleep" />
             </div>
             <div>
-              <h3 className="font-semibold">Sleep Quality</h3>
-              <p className="text-sm text-muted-foreground">How well did you sleep?</p>
+              <h3 className="font-semibold text-sm sm:text-base">Sleep Quality</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground">How well did you sleep?</p>
             </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-1.5 sm:gap-2">
             {levelOptions.map((option) => (
               <button
                 key={option.value}
                 onClick={() => setFormData({ ...formData, sleep_quality: option.value })}
-                className={`flex-1 p-3 rounded-xl border-2 transition-all text-center ${
+                className={`flex-1 p-2 sm:p-3 rounded-lg sm:rounded-xl border-2 transition-all text-center ${
                   formData.sleep_quality === option.value
                     ? "border-sleep bg-sleep/10"
                     : "border-border hover:border-sleep/50"
                 }`}
               >
-                <div className={`w-4 h-4 rounded-full ${option.color} mx-auto mb-1`} />
-                <span className="text-xs">{option.label}</span>
+                <div className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full ${option.color} mx-auto mb-0.5 sm:mb-1`} />
+                <span className="text-[10px] sm:text-xs">{option.label}</span>
               </button>
             ))}
           </div>
@@ -247,31 +247,31 @@ export default function Health() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="p-6 rounded-2xl bg-card border"
+          className="p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-card border"
         >
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-stress/10 flex items-center justify-center">
-              <Brain className="w-5 h-5 text-stress" />
+          <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-stress/10 flex items-center justify-center">
+              <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-stress" />
             </div>
             <div>
-              <h3 className="font-semibold">Stress Level</h3>
-              <p className="text-sm text-muted-foreground">How stressed are you feeling?</p>
+              <h3 className="font-semibold text-sm sm:text-base">Stress Level</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground">How stressed are you feeling?</p>
             </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-1.5 sm:gap-2">
             {stressOptions.map((option) => (
               <button
                 key={option.value}
                 onClick={() => setFormData({ ...formData, stress_level: option.value })}
-                className={`flex-1 p-3 rounded-xl border-2 transition-all text-center ${
+                className={`flex-1 p-2 sm:p-3 rounded-lg sm:rounded-xl border-2 transition-all text-center ${
                   formData.stress_level === option.value
                     ? "border-primary bg-primary/10"
                     : "border-border hover:border-primary/50"
                 }`}
               >
-                <div className={`w-4 h-4 rounded-full ${option.color} mx-auto mb-1`} />
-                <span className="text-xs">{option.label}</span>
+                <div className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full ${option.color} mx-auto mb-0.5 sm:mb-1`} />
+                <span className="text-[10px] sm:text-xs">{option.label}</span>
               </button>
             ))}
           </div>
@@ -282,24 +282,24 @@ export default function Health() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="p-6 rounded-2xl bg-card border"
+          className="p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-card border"
         >
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-warning/10 flex items-center justify-center">
-              <AlertTriangle className="w-5 h-5 text-warning" />
+          <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-warning/10 flex items-center justify-center">
+              <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-warning" />
             </div>
             <div>
-              <h3 className="font-semibold">Any Symptoms?</h3>
-              <p className="text-sm text-muted-foreground">Select all that apply</p>
+              <h3 className="font-semibold text-sm sm:text-base">Any Symptoms?</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground">Select all that apply</p>
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
             {commonSymptoms.map((symptom) => (
               <button
                 key={symptom}
                 onClick={() => toggleSymptom(symptom)}
-                className={`px-3 py-2 rounded-full border-2 text-sm transition-all ${
+                className={`px-2 sm:px-3 py-1.5 sm:py-2 rounded-full border-2 text-xs sm:text-sm transition-all ${
                   formData.symptoms.includes(symptom)
                     ? "border-warning bg-warning/10 text-warning"
                     : "border-border hover:border-warning/50"
@@ -316,9 +316,9 @@ export default function Health() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="p-6 rounded-2xl bg-card border"
+          className="p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-card border"
         >
-          <Label htmlFor="notes" className="text-base font-semibold">
+          <Label htmlFor="notes" className="text-sm sm:text-base font-semibold">
             Additional Notes
           </Label>
           <Textarea
@@ -326,7 +326,7 @@ export default function Health() {
             placeholder="Any other observations about your health today..."
             value={formData.notes}
             onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-            className="mt-3 min-h-[100px]"
+            className="mt-2 sm:mt-3 min-h-[80px] sm:min-h-[100px] text-sm"
           />
         </motion.section>
 
@@ -339,7 +339,7 @@ export default function Health() {
           <Button
             variant="hero"
             size="lg"
-            className="w-full"
+            className="w-full text-sm sm:text-base"
             onClick={handleSubmit}
             disabled={submitting}
           >
@@ -351,8 +351,8 @@ export default function Health() {
           </Button>
 
           {formData.symptoms.length > 2 && (
-            <p className="text-sm text-warning text-center mt-4 flex items-center justify-center gap-2">
-              <AlertTriangle className="w-4 h-4" />
+            <p className="text-xs sm:text-sm text-warning text-center mt-3 sm:mt-4 flex items-center justify-center gap-2">
+              <AlertTriangle className="w-3 h-3 sm:w-4 sm:h-4" />
               Multiple symptoms reported. Consider consulting a healthcare provider if they persist.
             </p>
           )}
