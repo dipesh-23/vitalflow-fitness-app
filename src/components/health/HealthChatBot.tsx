@@ -268,14 +268,14 @@ export function HealthChatBot() {
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
-            className="fixed bottom-6 right-6 z-50"
+            className="fixed bottom-4 right-4 z-50 sm:bottom-6 sm:right-6"
           >
             <Button
               onClick={() => setIsOpen(true)}
               size="lg"
-              className="h-14 w-14 rounded-full shadow-lg bg-primary hover:bg-primary/90"
+              className="h-12 w-12 sm:h-14 sm:w-14 rounded-full shadow-lg bg-primary hover:bg-primary/90"
             >
-              <MessageCircle className="h-6 w-6" />
+              <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6" />
             </Button>
           </motion.div>
         )}
@@ -288,18 +288,20 @@ export function HealthChatBot() {
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="fixed bottom-6 right-6 z-50 w-[380px] h-[550px] bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+            className="fixed inset-0 z-50 bg-card flex flex-col overflow-hidden
+                       sm:inset-auto sm:bottom-4 sm:right-4 sm:w-[380px] sm:h-[500px] sm:rounded-2xl sm:border sm:border-border sm:shadow-2xl
+                       md:bottom-6 md:right-6 md:w-[420px] md:h-[550px]"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-border bg-muted/50">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Bot className="h-5 w-5 text-primary" />
+            <div className="flex items-center justify-between p-3 sm:p-4 border-b border-border bg-muted/50 shrink-0">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Bot className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground">Health Assistant</h3>
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <History className="h-3 w-3" />
+                  <h3 className="font-semibold text-foreground text-sm sm:text-base">Health Assistant</h3>
+                  <div className="flex items-center gap-1 text-[10px] sm:text-xs text-muted-foreground">
+                    <History className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                     <span>Chat history saved</span>
                   </div>
                 </div>
@@ -328,7 +330,7 @@ export function HealthChatBot() {
             </div>
 
             {/* Messages */}
-            <ScrollArea className="flex-1 p-4" ref={scrollRef}>
+            <ScrollArea className="flex-1 p-3 sm:p-4" ref={scrollRef}>
               {isLoadingHistory ? (
                 <div className="flex items-center justify-center h-full">
                   <div className="flex items-center gap-2 text-muted-foreground">
@@ -337,29 +339,29 @@ export function HealthChatBot() {
                   </div>
                 </div>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   {messages.map((message, index) => (
                     <motion.div
                       key={message.id || index}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className={`flex gap-3 ${message.role === "user" ? "flex-row-reverse" : ""}`}
+                      className={`flex gap-2 sm:gap-3 ${message.role === "user" ? "flex-row-reverse" : ""}`}
                     >
                       <div
-                        className={`h-8 w-8 rounded-full flex items-center justify-center shrink-0 ${
+                        className={`h-7 w-7 sm:h-8 sm:w-8 rounded-full flex items-center justify-center shrink-0 ${
                           message.role === "user"
                             ? "bg-primary text-primary-foreground"
                             : "bg-muted text-muted-foreground"
                         }`}
                       >
                         {message.role === "user" ? (
-                          <User className="h-4 w-4" />
+                          <User className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                         ) : (
-                          <Bot className="h-4 w-4" />
+                          <Bot className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                         )}
                       </div>
                       <div
-                        className={`rounded-2xl px-4 py-2.5 max-w-[280px] text-sm ${
+                        className={`rounded-2xl px-3 py-2 sm:px-4 sm:py-2.5 max-w-[calc(100%-60px)] sm:max-w-[280px] md:max-w-[320px] text-xs sm:text-sm ${
                           message.role === "user"
                             ? "bg-primary text-primary-foreground"
                             : "bg-muted text-foreground"
@@ -372,12 +374,12 @@ export function HealthChatBot() {
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      className="flex gap-3"
+                      className="flex gap-2 sm:gap-3"
                     >
-                      <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
-                        <Bot className="h-4 w-4 text-muted-foreground" />
+                      <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-muted flex items-center justify-center">
+                        <Bot className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
                       </div>
-                      <div className="bg-muted rounded-2xl px-4 py-2.5">
+                      <div className="bg-muted rounded-2xl px-3 py-2 sm:px-4 sm:py-2.5">
                         <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
                       </div>
                     </motion.div>
@@ -387,15 +389,15 @@ export function HealthChatBot() {
 
               {/* Quick Prompts */}
               {messages.length === 1 && !isLoadingHistory && (
-                <div className="mt-4 space-y-2">
-                  <p className="text-xs text-muted-foreground">Quick actions:</p>
-                  <div className="flex flex-wrap gap-2">
+                <div className="mt-3 sm:mt-4 space-y-2">
+                  <p className="text-[10px] sm:text-xs text-muted-foreground">Quick actions:</p>
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
                     {quickPrompts.map((prompt, index) => (
                       <Button
                         key={index}
                         variant="outline"
                         size="sm"
-                        className="text-xs h-7"
+                        className="text-[10px] sm:text-xs h-6 sm:h-7 px-2 sm:px-3"
                         onClick={() => {
                           setInput(prompt);
                           inputRef.current?.focus();
@@ -410,7 +412,7 @@ export function HealthChatBot() {
             </ScrollArea>
 
             {/* Input */}
-            <div className="p-4 border-t border-border bg-background">
+            <div className="p-3 sm:p-4 border-t border-border bg-background shrink-0">
               <div className="flex gap-2">
                 <Input
                   ref={inputRef}
@@ -419,13 +421,13 @@ export function HealthChatBot() {
                   onKeyDown={handleKeyDown}
                   placeholder="Ask about your health..."
                   disabled={isLoading}
-                  className="flex-1"
+                  className="flex-1 text-sm sm:text-base h-9 sm:h-10"
                 />
                 <Button
                   onClick={handleSend}
                   disabled={!input.trim() || isLoading}
                   size="icon"
-                  className="shrink-0"
+                  className="shrink-0 h-9 w-9 sm:h-10 sm:w-10"
                 >
                   <Send className="h-4 w-4" />
                 </Button>
