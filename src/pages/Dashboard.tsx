@@ -146,16 +146,16 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <h1 className="text-2xl font-bold mb-1">
+          <h1 className="text-xl sm:text-2xl font-bold mb-0.5 sm:mb-1">
             {greeting()}, {profile?.full_name?.split(" ")[0] || "there"}! 👋
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-sm sm:text-base text-muted-foreground">
             {format(new Date(), "EEEE, MMMM d")}
           </p>
         </motion.div>
@@ -170,7 +170,7 @@ export default function Dashboard() {
         </motion.section>
 
         {/* Stats Grid */}
-        <section className="grid grid-cols-2 gap-4">
+        <section className="grid grid-cols-2 gap-2 sm:gap-4">
           <StatsCard
             title="Calories Burned"
             value={totalCaloriesBurned}
@@ -205,7 +205,7 @@ export default function Dashboard() {
 
         {/* Health Check-in */}
         <section>
-          <h2 className="text-lg font-semibold mb-3">Today's Health Status</h2>
+          <h2 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3">Today's Health Status</h2>
           <HealthStatus 
             checkin={healthCheckin} 
             onCheckIn={() => navigate("/health")} 
@@ -214,16 +214,16 @@ export default function Dashboard() {
 
         {/* Activity Log */}
         <section>
-          <h2 className="text-lg font-semibold mb-3">Today's Activities</h2>
-          <div className="bg-card rounded-2xl border p-4">
+          <h2 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3">Today's Activities</h2>
+          <div className="bg-card rounded-xl sm:rounded-2xl border p-3 sm:p-4">
             <ActivityLog activities={activities} />
           </div>
         </section>
 
         {/* Meal Summary */}
         <section>
-          <h2 className="text-lg font-semibold mb-3">Nutrition Overview</h2>
-          <div className="bg-card rounded-2xl border p-4">
+          <h2 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3">Nutrition Overview</h2>
+          <div className="bg-card rounded-xl sm:rounded-2xl border p-3 sm:p-4">
             <MealSummary meals={meals} dailyCalorieGoal={dailyCalorieGoal} />
           </div>
         </section>

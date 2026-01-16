@@ -257,11 +257,34 @@
     background: var(--gradient-card);
     backdrop-filter: blur(20px);
     box-shadow: 0 -4px 20px hsl(220 20% 10% / 0.08);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Safe area padding for mobile */
+  .safe-area-inset-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
   }
 
   /* Input focus glow */
   .input-glow:focus {
     box-shadow: 0 0 0 3px hsl(160 84% 39% / 0.15);
+  }
+
+  /* Hide scrollbar but keep scrolling */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Touch-friendly tap targets */
+  @media (pointer: coarse) {
+    button, a, input, select, textarea {
+      min-height: 44px;
+    }
   }
 }
 
